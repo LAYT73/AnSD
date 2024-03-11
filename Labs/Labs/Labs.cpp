@@ -1,20 +1,101 @@
-﻿// Labs.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
+﻿#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <locale>
 
-#include <iostream>
+void coinChangeGreedy(std::vector<int>& coins, int amount) {
+    std::sort(coins.begin(), coins.end(), std::greater<int>());
 
-int main()
-{
-    std::cout << "Hello World!\n";
+    int n = coins.size();
+    int i = 0;
+    while (amount > 0 && i < n) {
+        if (coins[i] <= amount) {
+            std::cout << coins[i] << " ";
+            amount -= coins[i];
+        }
+        else {
+            i++;
+        }
+    }
+    std::cout << std::endl;
 }
 
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
+int knapsackDP(int W, std::vector<int>& wt, std::vector<int>& val) {
+    int n = wt.size();
+    std::vector<std::vector<int>> K(n + 1, std::vector<int>(W + 1));
 
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
+    for (int i = 0; i <= n; i++) {
+        for (int w = 0; w <= W; w++) {
+            if (i == 0 || w == 0) {
+                K[i][w] = 0;
+            }
+            else if (wt[i - 1] <= w) {
+                K[i][w] = std::max(val[i - 1] + K[i - 1][w - wt[i - 1]], K[i - 1][w]);
+            }
+            else {
+                K[i][w] = K[i - 1][w];
+            }
+        }
+    }
+    return K[n][W];
+}
+
+int binarySearch(int arr[], int left, int right, int x) {
+    if (right >= left) {
+        int mid = left + (right - left) / 2;
+
+        // Если элемент найден посередине
+        if (arr[mid] == x)
+            return mid;
+
+        // Если элемент меньше, чем середина, ищем в левой половине
+        if (arr[mid] > x)
+            return binarySearch(arr, left, mid - 1, x);
+
+        // В противном случае ищем в правой половине
+        return binarySearch(arr, mid + 1, right, x);
+    }
+
+    // Если элемент не найден вообще
+    return -1;
+}
+
+void quadraticAlgorithm(const std::vector<int>& arr) {
+    int n = arr.size();
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            std::cout << arr[i] << " " << arr[j] << std::endl;
+        }
+    }
+}
+
+void linearAlgorithm(const std::vector<int>& arr) {
+    for (int num : arr) {
+        std::cout << num << " ";
+    }
+}
+
+int main() {
+    setlocale(LC_CTYPE, "Russian");
+
+    std::vector<int> coins = { 1, 2, 5, 10, 20, 50, 100, 500, 1000 };
+    int amount = 93;
+    coinChangeGreedy(coins, amount);
+
+    std::vector<int> val = { 60, 100, 120 };
+    std::vector<int> wt = { 10, 20, 30 };
+    int W = 50;
+    std::cout << "Maximum value: " << knapsackDP(W, wt, val) << std::endl;
+
+    std::vector<int> arr = { 1, 2, 3, 4, 5 };
+    linearAlgorithm(arr);
+    quadraticAlgorithm(arr);
+
+    int arr2[] = { 2, 3, 4, 10, 40 };
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int x = 10;
+    int result = binarySearch(arr2, 0, n - 1, x);
+    (result == -1) ? std::cout << "Элемент не найден"
+        : std::cout << "Элемент найден по индексу " << result;
+    return 0;
+}
