@@ -1,7 +1,8 @@
 ﻿#include <iostream>
 #include <string>
 #include <locale>
-
+#include <random>
+#include <time.h> 
 // Структура, представляющая блюдо
 struct Dish {
     std::string name; // Название блюда
@@ -166,25 +167,21 @@ int main() {
     std::cout << "Количество порций: " << currentOrder.quantity << std::endl;
     std::cout << "Калории на порцию: " << currentOrder.dish.calories << std::endl;
 
-    int arr[] = { 12, 11, 13, 5, 6, 7 };
-    int n = 6;
-
+    int const n = 100000;
+    int arr[n];
+    for (int i = 0; i < n; ++i) arr[i] = rand();
+    clock_t start = clock();
     mergeSort(arr, 0, n - 1);
+    clock_t end = clock();
+    double seconds = (double)(end - start) / CLOCKS_PER_SEC;
+    printf("The time: %f seconds\n", seconds);
 
-    for (int i = 0; i < n; ++i) {
-        std::cout << arr[i] << " ";
-    }
-    std::cout << std::endl;
-
-    int arr2[] = { 5, 2, 9, 1, 5, 6 };
-    int n2 = 6;
-
-    cocktailSort(arr2, n2);
-
-    for (int i = 0; i < n2; ++i) {
-        std::cout << arr2[i] << " ";
-    }
-    std::cout << std::endl;
+    for (int i = 0; i < n; ++i) arr[i] = rand();
+    start = clock();
+    cocktailSort(arr, n);
+    end = clock();
+    seconds = (double)(end - start) / CLOCKS_PER_SEC;
+    printf("The time: %f seconds\n", seconds);
 
     return 0;
 }
