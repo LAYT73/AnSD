@@ -78,8 +78,8 @@ void linearAlgorithm(const std::vector<int>& arr) {
 int main() {
     setlocale(LC_CTYPE, "Russian");
 
-    std::vector<int> coins = { 1, 2, 5, 10, 20, 50, 100, 500, 1000 };
-    int amount = 93;
+    std::vector<int> coins = { 1, 5, 10, 25, 50 };
+    int amount = 17;
     coinChangeGreedy(coins, amount);
 
     std::vector<int> val = { 60, 100, 120 };
