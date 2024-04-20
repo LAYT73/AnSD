@@ -1,6 +1,9 @@
 ﻿#include <iostream>
 #include <string>
 #include <locale>
+#include <random>
+#include <ctime>
+#include <chrono>
 
 // Структура, представляющая блюдо
 struct Dish {
@@ -166,25 +169,41 @@ int main() {
     std::cout << "Количество порций: " << currentOrder.quantity << std::endl;
     std::cout << "Калории на порцию: " << currentOrder.dish.calories << std::endl;
 
-    int arr[] = { 12, 11, 13, 5, 6, 7 };
-    int n = 6;
+    const int N = 1000;
+    int arr[N];
 
-    mergeSort(arr, 0, n - 1);
+    std::random_device rd; // Инициализация генератора случайных чисел
+    std::mt19937 gen(rd()); // Используем Mersenne Twister 19937 генератор
+    std::uniform_int_distribution<int> dis(1, 100); // Генерация чисел в диапазоне [1, 100]
 
-    for (int i = 0; i < n; ++i) {
-        std::cout << arr[i] << " ";
+    // Заполнение массива случайными числами
+    for (int i = 0; i < N; ++i) {
+        arr[i] = dis(gen);
     }
-    std::cout << std::endl;
 
-    int arr2[] = { 5, 2, 9, 1, 5, 6 };
-    int n2 = 6;
+    // Начало временного замера
+    auto start = std::chrono::high_resolution_clock::now();
+    mergeSort(arr, 0, N - 1);
+    // Конец временного замера
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end - start;
+    // Вывод времени выполнения
+    std::cout << "Время выполнения сортировки слиянием: " << elapsed.count() << " секунд\n";
 
-    cocktailSort(arr2, n2);
+    int arr2[N];
 
-    for (int i = 0; i < n2; ++i) {
-        std::cout << arr2[i] << " ";
+    // Заполнение массива случайными числами
+    for (int i = 0; i < N; ++i) {
+        arr2[i] = dis(gen);
     }
-    std::cout << std::endl;
+    // Начало временного замера
+    start = std::chrono::high_resolution_clock::now();
+    cocktailSort(arr2, N);
+    // Конец временного замера
+    end = std::chrono::high_resolution_clock::now();
+    elapsed = end - start;
+    // Вывод времени выполнения
+    std::cout << "Время выполнения коктейльной сортировки: " << elapsed.count() << " секунд\n";
 
     return 0;
 }
