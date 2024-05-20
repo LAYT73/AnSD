@@ -1,20 +1,71 @@
-﻿// Labs.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
+﻿#include <iostream>
+#include <vector>
+#include <list>
+#include <stack>
+#include <queue>
+#include <unordered_map>
+#include <chrono>
 
-#include <iostream>
+using namespace std;
+using namespace std::chrono;
 
-int main()
-{
-    std::cout << "Hello World!\n";
+const int NUM_ELEMENTS = 100000;
+
+void test_vector() {
+    vector<int> v;
+    auto start = high_resolution_clock::now();
+    for (int i = 0; i < NUM_ELEMENTS; ++i) {
+        v.push_back(i);
+    }
+    auto end = high_resolution_clock::now();
+    cout << "Vector push_back: " << duration_cast<milliseconds>(end - start).count() << " ms\n";
 }
 
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
+void test_list() {
+    list<int> l;
+    auto start = high_resolution_clock::now();
+    for (int i = 0; i < NUM_ELEMENTS; ++i) {
+        l.push_back(i);
+    }
+    auto end = high_resolution_clock::now();
+    cout << "List push_back: " << duration_cast<milliseconds>(end - start).count() << " ms\n";
+}
 
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
+void test_stack() {
+    stack<int> s;
+    auto start = high_resolution_clock::now();
+    for (int i = 0; i < NUM_ELEMENTS; ++i) {
+        s.push(i);
+    }
+    auto end = high_resolution_clock::now();
+    cout << "Stack push: " << duration_cast<milliseconds>(end - start).count() << " ms\n";
+}
+
+void test_queue() {
+    queue<int> q;
+    auto start = high_resolution_clock::now();
+    for (int i = 0; i < NUM_ELEMENTS; ++i) {
+        q.push(i);
+    }
+    auto end = high_resolution_clock::now();
+    cout << "Queue push: " << duration_cast<milliseconds>(end - start).count() << " ms\n";
+}
+
+void test_unordered_map() {
+    unordered_map<int, int> m;
+    auto start = high_resolution_clock::now();
+    for (int i = 0; i < NUM_ELEMENTS; ++i) {
+        m[i] = i;
+    }
+    auto end = high_resolution_clock::now();
+    cout << "Unordered_map insert: " << duration_cast<milliseconds>(end - start).count() << " ms\n";
+}
+
+int main() {
+    test_vector();
+    test_list();
+    test_stack();
+    test_queue();
+    test_unordered_map();
+    return 0;
+}
