@@ -73,14 +73,74 @@ public:
     }
 };
 
-// Пример использования стека
+// Определение размера массива для ArrayStack
+const int ARRAY_SIZE = 50; // Примерный размер, может быть любым положительным числом
+
+template<typename T>
+class ArrayStack : public IStack<T> {
+private:
+    T data[ARRAY_SIZE]; // Теперь размер массива определен
+    int top = -1; // Индекс вершины стека
+
+public:
+    ArrayStack() = default;
+
+    ~ArrayStack() override = default;
+
+    void push(const T& item) override {
+        if (isFull()) {
+            throw std::out_of_range("Stack is full");
+        }
+        data[++top] = item;
+    }
+
+    T pop() override {
+        if (isEmpty()) {
+            throw std::out_of_range("Stack is empty");
+        }
+        return data[top--];
+    }
+
+    T peek() const override {
+        if (isEmpty()) {
+            throw std::out_of_range("Stack is empty");
+        }
+        return data[top];
+    }
+
+    bool isEmpty() const override {
+        return top == -1;
+    }
+
+    bool isFull() {
+        return top == ARRAY_SIZE - 1;
+    }
+};
+
 int main() {
-    IStack<int>* stack = new LinkedListStack<int>();
-    stack->push(1);
-    stack->push(2);
-    stack->push(3);
-    std::cout << stack->pop() << std::endl; // Выведет: 3
-    std::cout << stack->peek() << std::endl; // Выведет: 2
-    delete stack;
+    try {
+        LinkedListStack<int> stack; // Создаем стек с максимальной вместимостью 10 элементов
+
+        // Добавляем несколько элементов в стек
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+
+        // Проверяем, что стек не пуст
+        if (!stack.isEmpty()) {
+            std::cout << "Top element: " << stack.peek() << std::endl;
+            std::cout << "Popped element: " << stack.pop() << std::endl;
+        }
+
+        // Добавляем еще один элемент
+        stack.push(4);
+        std::cout << "Added element: 4" << std::endl;
+
+    }
+    catch (std::exception& e) {
+        std::cerr << e.what() << std::endl;
+    }
+
     return 0;
 }
+
