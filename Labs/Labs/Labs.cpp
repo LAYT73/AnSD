@@ -1,7 +1,29 @@
 ﻿#include <iostream>
+#include <list>
 #include <vector>
-#include <chrono>
-#include <fstream>
+
+class ChainingHashTable {
+public:
+    ChainingHashTable(int size) : table(size) {}
+
+    void insert(int key) {
+        int hash = key % table.size();
+        table[hash].push_back(key);
+    }
+
+    void printTable() const {
+        for (int i = 0; i < table.size(); ++i) {
+            std::cout << i << ": ";
+            for (auto it = table[i].begin(); it != table[i].end(); ++it) {
+                std::cout << *it << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
+private:
+    std::vector<std::list<int>> table;
+};
 
 class LinearProbingHashTable {
 public:
@@ -21,18 +43,10 @@ public:
         return true;
     }
 
-    bool search(int key) {
-        int hash = key % table.size();
-        int initialHash = hash;
-
-        while (table[hash] != key) {
-            hash = (hash + 1) % table.size();
-            if (hash == initialHash || table[hash] == -1) {
-                return false; // Элемент не найден
-            }
+    void printTable() const {
+        for (int i = 0; i < table.size(); ++i) {
+            std::cout << i << ": " << table[i] << std::endl;
         }
-
-        return true;
     }
 
 private:
@@ -40,41 +54,62 @@ private:
     int currentSize;
 };
 
+class BloomFilter {
+public:
+    BloomFilter(int size) : bits(size), numHashes(2) {}
+
+    void insert(int key) {
+        for (int i = 0; i < numHashes; ++i) {
+            bits[hash(key, i) % bits.size()] = true;
+        }
+    }
+
+    bool contains(int key) const {
+        for (int i = 0; i < numHashes; ++i) {
+            if (!bits[hash(key, i) % bits.size()]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+private:
+    std::vector<bool> bits;
+    int numHashes;
+
+    int hash(int key, int seed) const {
+        std::hash<int> hasher;
+        return hasher(key + seed);
+    }
+};
+
 int main() {
-    const int tableSize = 1000;
-    const int numTests = 10;
-    LinearProbingHashTable hashTable(tableSize);
+    LinearProbingHashTable hashTable(10);
 
-    std::vector<int> keys;
-    for (int i = 0; i < tableSize / 2; ++i) {
-        keys.push_back(i);
-    }
+    hashTable.insert(5);
+    hashTable.insert(15);
+    hashTable.insert(25);
+    hashTable.insert(35);
 
-    std::ofstream outFile("hash_table_timing.csv");
-    outFile << "Test,InsertionTime,SearchTime\n";
+    hashTable.printTable();
 
-    for (int test = 0; test < numTests; ++test) {
-        auto startInsertion = std::chrono::high_resolution_clock::now();
-        for (int key : keys) {
-            hashTable.insert(key);
-        }
-        auto endInsertion = std::chrono::high_resolution_clock::now();
+    ChainingHashTable hashTable2(10);
 
-        auto insertionDuration = std::chrono::duration_cast<std::chrono::microseconds>(endInsertion - startInsertion).count();
+    hashTable2.insert(5);
+    hashTable2.insert(15);
+    hashTable2.insert(25);
+    hashTable2.insert(35);
 
-        auto startSearch = std::chrono::high_resolution_clock::now();
-        for (int key : keys) {
-            hashTable.search(key);
-        }
-        auto endSearch = std::chrono::high_resolution_clock::now();
+    hashTable2.printTable();
 
-        auto searchDuration = std::chrono::duration_cast<std::chrono::microseconds>(endSearch - startSearch).count();
+    BloomFilter filter(100);
 
-        outFile << test + 1 << "," << insertionDuration << "," << searchDuration << "\n";
-    }
+    filter.insert(5);
+    filter.insert(15);
 
-    outFile.close();
-    std::cout << "Timing data saved to hash_table_timing.csv" << std::endl;
+    std::cout << "Contains 5: " << filter.contains(5) << std::endl;
+    std::cout << "Contains 15: " << filter.contains(15) << std::endl;
+    std::cout << "Contains 25: " << filter.contains(25) << std::endl;
 
     return 0;
 }
