@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <locale>
+#include <chrono>
 
 void coinChangeGreedy(std::vector<int>& coins, int amount) {
     std::sort(coins.begin(), coins.end(), std::greater<int>());
@@ -90,12 +91,51 @@ int main() {
     std::vector<int> arr = { 1, 2, 3, 4, 5 };
     linearAlgorithm(arr);
     quadraticAlgorithm(arr);
+    // Временные замеры бинарного поиска
+    for (int size = 1000; size <= 10000; size += 1000) {
+        std::vector<int> testArray(size);
+        for (int i = 0; i < size; ++i) {
+            testArray[i] = i + 1;
+        }
 
-    int arr2[] = { 2, 3, 4, 10, 40 };
-    int n = sizeof(arr) / sizeof(arr[0]);
-    int x = 10;
-    int result = binarySearch(arr2, 0, n - 1, x);
-    (result == -1) ? std::cout << "Элемент не найден"
-        : std::cout << "Элемент найден по индексу " << result;
+        int x = size - 2;  // Элемент, который мы будем искать
+        auto start = std::chrono::high_resolution_clock::now();
+        int result = binarySearch(testArray.data(), 0, size - 1, x);
+        auto end = std::chrono::high_resolution_clock::now();
+
+        std::chrono::duration<double, std::milli> duration = end - start;
+        std::cout << "Размер массива: " << size << ", Время выполнения: " << duration.count() << " мс" << std::endl;
+    }
+    // Временные замеры бинарного поиска
+    for (int size = 10000; size <= 100000; size += 10000) {
+        std::vector<int> testArray(size);
+        for (int i = 0; i < size; ++i) {
+            testArray[i] = i + 1;
+        }
+
+        int x = size - 2;  // Элемент, который мы будем искать
+        auto start = std::chrono::high_resolution_clock::now();
+        int result = binarySearch(testArray.data(), 0, size - 1, x);
+        auto end = std::chrono::high_resolution_clock::now();
+
+        std::chrono::duration<double, std::milli> duration = end - start;
+        std::cout << "Размер массива: " << size << ", Время выполнения: " << duration.count() << " мс" << std::endl;
+    }
+    // Временные замеры бинарного поиска
+    for (int size = 100000; size <= 1000000; size += 100000) {
+        std::vector<int> testArray(size);
+        for (int i = 0; i < size; ++i) {
+            testArray[i] = i + 1;
+        }
+
+        int x = size-2;  // Элемент, который мы будем искать
+        auto start = std::chrono::high_resolution_clock::now();
+        int result = binarySearch(testArray.data(), 0, size - 1, x);
+        auto end = std::chrono::high_resolution_clock::now();
+
+        std::chrono::duration<double, std::milli> duration = end - start;
+        std::cout << "Размер массива: " << size << ", Время выполнения: " << duration.count() << " мс" << std::endl;
+    }
+
     return 0;
 }
